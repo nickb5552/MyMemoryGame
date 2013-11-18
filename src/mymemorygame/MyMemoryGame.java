@@ -1,9 +1,11 @@
 package mymemorygame;
 
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -15,7 +17,7 @@ public class MyMemoryGame implements ActionListener
     JFrame mainBoard;
     ImageIcon cardImage;
     ImageIcon cardCover;
-    int width = 1200;
+    int width = 1000;
     int height = 1200;
     JButton button1;
     JButton button2;
@@ -25,6 +27,9 @@ public class MyMemoryGame implements ActionListener
     int[] int52List = new int[52];
     int[] topTenList = new int[10];
     int[] bottomTenList = new int[10];
+    ArrayList<Integer> int52ArrayList = new ArrayList<Integer>();
+    ArrayList<Integer> toptenArrayList = new ArrayList<Integer>();
+    ArrayList<Integer> bottomArrayList = new ArrayList<Integer>();
     JButton matchDisplay;
     int matchNum = 0;
     Random r = new Random();
@@ -38,25 +43,30 @@ public class MyMemoryGame implements ActionListener
 
     public void getGoing()
     {
-        for (int lnumber = 0; lnumber < 52; lnumber++)
+        for (int i = 0; i < 51; i++) // i = index into 52 list -> Filling the list with 0 through 51
         {
-            int52List[lnumber] = lnumber;
+            int52ArrayList.add(i);
         }
-        for (int tl = 0; tl < 10; tl++)
+        for (int tl = 0; tl < 9;) //tl = top list 
         {
-            int randomStore = r.nextInt(51);
-            if (tl != 99)    //Problems with 52 list - going into top ten array
-            {
-                topTenList[tl] = int52List[randomStore];
-            }
-            int52List[randomStore] = 99;
-            System.out.println(topTenList[tl]);
+            int randomPointer = r.nextInt(int52ArrayList.size()); // Chose random number out of the list size
+            toptenArrayList.set(tl, int52ArrayList.get(randomPointer));
+            int52ArrayList.remove(randomPointer); //removing previous var
+            System.out.print(topTenList[tl] + " ");
+        }
+        System.out.println("");
+        for (int bl = 0; bl < 9;) // bl = bottom ten list var
+        {
+            int randomPointer2 = r.nextInt(toptenArrayList.size());
+            bottomArrayList.set(bl, toptenArrayList.get(randomPointer2));
+            toptenArrayList.remove(randomPointer2);
+            System.out.print(bottomTenList[bl] + " ");
         }
         mainBoard = new JFrame();
         mainBoard.setBackground(Color.blue);
         mainBoard = new JFrame("The Memory Game");
         mainBoard.setSize(width, height);
-        mainBoard.setLayout(new GridLayout(2, 1));
+        mainBoard.setLayout(new FlowLayout());
         mainBoard.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         gamePanel = new JPanel();
         controlPanel = new JPanel();
@@ -73,7 +83,7 @@ public class MyMemoryGame implements ActionListener
         {
             for (int column = 0; column < 5; column++)
             {
-                cardArray[row][column] = new JButton(row + "/" + column); //loading the array list with buttons
+                cardArray[row][column] = new JButton(); //loading the array list with buttons
                 cardArray[row][column].addActionListener(this); //adds an action listener to each button
             }
         }
