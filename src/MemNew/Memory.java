@@ -1,5 +1,9 @@
 package MemNew;
 
+/*******************************************
+ * Copyright 2014 Nick Barber
+ * version 0.9, 12/31/13
+ *******************************************/
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
