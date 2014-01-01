@@ -24,10 +24,11 @@ public class Memory implements ActionListener
     JButton button2;
     JPanel gamePanel;
     JPanel controlPanel;
-    JButton[][] cardArray;
-    ArrayList<Integer> int52ArrayList = new ArrayList<Integer>();
-    ArrayList<Integer> toptenArrayList = new ArrayList<Integer>();
-    ArrayList<Integer> bottomArrayList = new ArrayList<Integer>();
+    JButton[][] topButtonArray;
+    JButton[][] bottomButtonArray;
+    ArrayList<Integer> fiftyTwoIntegerList = new ArrayList<Integer>();
+    ArrayList<Integer> topTenIntegerList = new ArrayList<Integer>();
+    ArrayList<Integer> bottomTenIntegerList = new ArrayList<Integer>();
     JButton matchDisplay;
     int matchNum = 0;
     Random r = new Random();
@@ -43,18 +44,19 @@ public class Memory implements ActionListener
 
     public void getGoing()
     {
-        for (int i = 0; i < 52; i++) // i = index into 52 list -> Filling the list with 0 through 51
+        for (int i = 0; i < 52; i++) // i = index into 52 list -> Filling the list with integers 0 through 51
         {
-            int52ArrayList.add(i);
+            fiftyTwoIntegerList.add(i);
         }
-        Collections.shuffle(int52ArrayList);
+        Collections.shuffle(fiftyTwoIntegerList);
 
-        for (int tl = 0; tl < 10; tl++) //tl = top list 
+        for (int j = 0; j < 10; j++) //j = index into top list -> Filling top and bottom list with the same random shuffled numbers from 52 list
         {
-            toptenArrayList.add(int52ArrayList.get(tl));
-            bottomArrayList.add(int52ArrayList.get(tl));
+            topTenIntegerList.add(fiftyTwoIntegerList.get(j));
+            bottomTenIntegerList.add(fiftyTwoIntegerList.get(j));
         }
-        Collections.shuffle(bottomArrayList);
+        
+        Collections.shuffle(bottomTenIntegerList); // Shuffle the bottom list to make it different from the top list (same numbers in different order)
         mainBoard = new JFrame();
         mainBoard.setBackground(Color.blue);
         mainBoard = new JFrame("The Memory Game");
@@ -67,20 +69,34 @@ public class Memory implements ActionListener
         controlPanel.setBackground(Color.green);
         mainBoard.add(gamePanel);
         mainBoard.add(controlPanel);
-        gamePanel.setLayout(new GridLayout(4, 5)); //check this layout
-        cardArray = new JButton[4][5];
+        gamePanel.setLayout(new GridLayout(4, 5)); 
+        topButtonArray = new JButton[2][5];
+        bottomButtonArray = new JButton[2][5];
         matchDisplay = new JButton("Number of matches: " + matchNum);
         controlPanel.add(matchDisplay);
-
-        for (int row = 0; row < 4; row++)
+        cardCover = new ImageIcon(getClass().getResource("images/CardCover_" + 3 + ".jpg"));
+        
+        for (int row = 0; row < 2; row++) // Set up topList
         {
             for (int column = 0; column < 5; column++)
             {
-                cardArray[row][column] = new JButton(); //loading the array list with buttons
-                cardArray[row][column].addActionListener(this); //adds an action listener to each button
-                gamePanel.add(cardArray[row][column]); // adds buttons to the panel 
-                cardCover = new ImageIcon(getClass().getResource("images/CardCover_" + 3 + ".jpg"));
-                cardArray[row][column].setIcon(cardCover);
+                topButtonArray[row][column] = new JButton(); //loading the array list with buttons
+                topButtonArray[row][column].addActionListener(this); //adds an action listener to each button
+                gamePanel.add(topButtonArray[row][column]); // adds buttons to the panel 
+                topButtonArray[row][column].setIcon(cardCover);
+                topButtonArray[row][column].setMnemonic(topTenIntegerList.get(row * 5 + column));
+            }
+        }
+
+        for (int row = 0; row < 2; row++) // Set up 4 x 5 matrix of buttons on gamePanel
+        {
+            for (int column = 0; column < 5; column++)
+            {
+                bottomButtonArray[row][column] = new JButton(); //loading the array list with buttons
+                bottomButtonArray[row][column].addActionListener(this); //adds an action listener to each button
+                gamePanel.add(bottomButtonArray[row][column]); // adds buttons to the panel 
+                bottomButtonArray[row][column].setIcon(cardCover);
+                bottomButtonArray[row][column].setMnemonic(bottomTenIntegerList.get(row * 5 + column));
             }
         }
         gamePanel.setVisible(true);
@@ -91,6 +107,7 @@ public class Memory implements ActionListener
     public void actionPerformed(ActionEvent joe)
     {
         selectedButton = (JButton)joe.getSource();
-        selectedButton.setIcon(new ImageIcon(getClass().getResource("images/Card" + 1 + ".jpg")));
+        int cardImageNumber = selectedButton.getMnemonic();
+        selectedButton.setIcon(new ImageIcon(getClass().getResource("images/Card" + cardImageNumber + ".jpg")));
     }
 }
